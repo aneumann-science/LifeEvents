@@ -1,0 +1,17 @@
+Package: LifeEvents
+Type: Package
+Title: Life Events Data Tools
+Version: 0.1.0
+Date: 2016-03-18
+Authors@R: person("Alexander", "Neumann",
+    email = "alexander.neumann.science@gmail.com",
+    role = c("aut", "cre"))
+Description: This package helps working with the Generation R life events data.
+    It contains functions to filter life events depending on age of
+    occurence and influence, and to computes the number of life events
+    experienced.
+Depends:
+    R (>= 3.2.4)
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 5.0.1
