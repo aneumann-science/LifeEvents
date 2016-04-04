@@ -4,33 +4,33 @@
 \alias{filter_le}
 \title{Filtering Life Events by Age and Influence}
 \usage{
-filter_le(data, age.filter, age, include.last.year = T, influence.filter,
-  min.influence = 1, missing.influence = T, reliable)
+filter_le(data, age.filter, max.age, include.last.year = T, influence.filter,
+  min.influence, reliable)
 }
 \arguments{
 \item{data}{A data frame containing the life events data}
 
 \item{age.filter}{A logical. If age.filter = T, life events will be filtered
-according to the age and include.last.year settings. Missing age information
+according to the max.age and include.last.year settings. Missing age information
 will set life event to missing.}
 
-\item{age}{A numeric value. The maximum allowable age. Since the age at which
-a life event happened is only available at whole years, this by default can
-also include events, which happened after the allowable age, if
-include.last.year = T. A missing life event age will return a missing life
-event.}
+\item{max.age}{A string. Name of the column with the maximum allowable age. Since
+the age at which a life event happened is only available at whole years,
+this by default can also include events, which happened after the allowable
+age, if include.last.year = T.}
 
 \item{influence.filter}{A logical. If influence.filter=T, life events will
 be filtered according to the min.influence setting. Missing influence
-information will set life to missing.}
+information will set life events to missing.}
 
 \item{min.influence}{A numeric value. The minimum amount of influence
-at the time of interview. A missing value will set the life event to missing
-.
-1 'no influence / geen'
-2 'a little influence / een beetje'
-3 'moderate influence / tamelijk veel'
-4 'a lot of influence / heel veel'}
+at the time of interview.
+\enumerate{
+ \item 'no influence / geen'
+ \item 'a little influence / een beetje'
+ \item 'moderate influence / tamelijk veel'
+ \item 'a lot of influence / heel veel'
+}}
 
 \item{reliable}{A logical. Indicates whether life events should be omitted,
 when they were judged to be unreliable, e.g. when language difficulties
