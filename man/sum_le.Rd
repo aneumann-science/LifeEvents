@@ -7,7 +7,7 @@
 sum_le(data, include.open, na.rm)
 }
 \arguments{
-\item{data}{A data.frame, which includes information, whether life events
+\item{data}{A data.frame, which includes information, whether life evetns
 occured or not.}
 
 \item{include.open}{A logical. include.open = T will include open life

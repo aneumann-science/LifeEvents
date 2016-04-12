@@ -1,7 +1,7 @@
 Package: LifeEvents
 Type: Package
 Title: Life Events Data Tools
-Version: 0.1.1
+Version: 0.2.0
 Date: 2016-03-18
 Authors@R: person("Alexander", "Neumann",
     email = "alexander.neumann.science@gmail.com",

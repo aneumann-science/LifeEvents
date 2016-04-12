@@ -46,6 +46,8 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
   tofilter.data <- data[ , c(le.names, le_age.names,
                              le_influence.names, "unreliable", max.age)]
 
+  tofilter.data <- as.data.frame(sapply(tofilter.data, function(x) as.numeric(x)))
+
   # Set life events data to missing when unreliable
   if (reliable) {
     # For all life events
@@ -53,7 +55,7 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
       # Set current variable name
       le <- paste0("le", x, sep = "")
       # Set to missing, when unreliable
-      filtered <- ifelse(tofilter.data[ ,"unreliable"] == 0 |
+      filtered <- ifelse(tofilter.data[ ,"unreliable"] == 1 |
                            is.na(tofilter.data[ ,"unreliable"]),
                          tofilter.data[ ,le], NA)
     })
@@ -73,14 +75,14 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
       # Filter life events
       filtered <-
         # If life events did not occur or above age, set to 0
-        ifelse(tofilter.data[ ,le] == 0 |
-                 tofilter.data[ ,le] == 1 &
+        ifelse(tofilter.data[ ,le] == 1 |
+                 tofilter.data[ ,le] == 2 &
                  (tofilter.data[,le_age] > tofilter.data[,max.age]),
-               0,
+               1,
                # If life event occured and below max.age, then 1, else NA
-               ifelse(tofilter.data[ ,le] == 1 &
+               ifelse(tofilter.data[ ,le] == 2 &
                         (tofilter.data[,le_age] <= tofilter.data[,max.age]),
-                      1,
+                      2,
                       NA))
     })
     colnames(age.data) <- le.names
@@ -97,14 +99,14 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
       # Filter life events
       filtered <-
         # If life events did not occur or above age, set to 0
-        ifelse(tofilter.data[ ,le] == 0 |
-                 tofilter.data[ ,le] == 1 &
+        ifelse(tofilter.data[ ,le] == 1 |
+                 tofilter.data[ ,le] == 2 &
                  (tofilter.data[,le_age] >= tofilter.data[,max.age]),
-               0,
+               1,
                # If life event occured and below age, then 1, else NA
-               ifelse(tofilter.data[ ,le] == 1 &
+               ifelse(tofilter.data[ ,le] == 2 &
                         (tofilter.data[,le_age] < tofilter.data[,max.age]),
-                      1,
+                      2,
                       NA))
     })
     colnames(age.data) <- le.names
@@ -123,14 +125,14 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
       # Filter life events
       filtered <-
         # If life events did not occur or below influence level, set to 0
-        ifelse(tofilter.data[ ,le] == 0 |
-                 tofilter.data[ ,le] == 1 &
+        ifelse(tofilter.data[ ,le] == 1 |
+                 tofilter.data[ ,le] == 2 &
                  (tofilter.data[ ,le_influence] < min.influence),
-               0,
+               1,
                # If life event occured and above influence, then 1, else NA
-               ifelse(tofilter.data[ ,le] == 1 &
+               ifelse(tofilter.data[ ,le] == 2 &
                         (tofilter.data[ ,le_influence] >= min.influence),
-                      1,
+                      2,
                       NA))
     })
     colnames(influence.data) <- le.names
@@ -138,7 +140,10 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
                            tofilter.data[c(le_age.names, le_influence.names,
                                            "unreliable", max.age)])
   }
-  return(filtered.data <- tofilter.data)
+
+  # Change values, so that no life event = 0 and life event experienced = 1
+  # Return filtered life event data
+  return(sapply(tofilter.data[le.names], function(x) x-1))
 }
 
 #' Compute number of life events
@@ -147,7 +152,7 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
 #' include to compute the number omitting open life events, as well as
 #' how to handle missing values.
 #'
-#' @param data A data.frame, which includes information, whether life events
+#' @param data A data.frame, which includes information, whether life evetns
 #' occured or not.
 #' @param include.open A logical. include.open = T will include open life
 #' events in calculations.
