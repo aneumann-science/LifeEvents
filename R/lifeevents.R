@@ -13,7 +13,11 @@
 #' the age at which a life event happened is only available at whole years,
 #' this by default can also include events, which happened after the allowable
 #' age, if include.last.year = T.
-#' @param influence.filter A logical. If influence.filter=T, life events will
+#' @param include.last.year A logical. If TRUE, life events occuring at the
+#' same age as "max.age" are kept. Thus some events might have happened after
+#' "max.age". If FALSE, life events occuring at the same age will be set as not
+#' having occured. Default is TRUE.
+#' @param influence.filter A logical. If influence.filter = T, life events will
 #' be filtered according to the min.influence setting. Missing influence
 #' information will set life events to missing.
 #' @param  min.influence A numeric value. The minimum amount of influence
