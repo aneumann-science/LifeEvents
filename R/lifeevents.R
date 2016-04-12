@@ -33,7 +33,8 @@
 #' were noted during the interview. reliable = T omits unreliable life events,
 #' reliable = F keeps them. Missing reliability information is assumed to
 #' be reliable.
-#' @return A data.frame containing information whether life events occured.
+#' @return A matrix containing information whether life events occured (1)
+#' or not (0).
 #'
 #' @export
 
@@ -152,8 +153,8 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
 #' include to compute the number omitting open life events, as well as
 #' how to handle missing values.
 #'
-#' @param data A data.frame, which includes information, whether life evetns
-#' occured or not.
+#' @param data A matrix, which includes information, whether life evetns
+#' occured (1) or not (0).
 #' @param include.open A logical. include.open = T will include open life
 #' events in calculations.
 #' @param na.rm A logical. na.rm=T will treat missing life events as 0.
