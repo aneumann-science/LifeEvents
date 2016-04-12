@@ -44,7 +44,8 @@ reliable = F keeps them. Missing reliability information is assumed to
 be reliable.}
 }
 \value{
-A data.frame containing information whether life events occured.
+A matrix containing information whether life events occured (1)
+or not (0).
 }
 \description{
 \code{filter_le} filters life events by a specified age and influence at
