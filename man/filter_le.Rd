@@ -4,25 +4,40 @@
 \alias{filter_le}
 \title{Filtering Life Events by Age and Influence}
 \usage{
-filter_le(data, age.filter, max.age, include.last.year = T, influence.filter,
-  min.influence, reliable)
+filter_le(data, min.age.filter = F, min.age = "", include.first.year = F,
+  max.age.filter = F, max.age = "", include.last.year = F,
+  influence.filter = F, min.influence = 1, reliable = T)
 }
 \arguments{
 \item{data}{A data frame containing the life events data}
 
-\item{age.filter}{A logical. If age.filter = T, life events will be filtered
+\item{min.age.filter}{A logical. If min.age.filter = T, life events will be filtered
+according to the min.age and include.first.year settings. Missing age information
+will set life event to missing.}
+
+\item{min.age}{A string. Name of the column with the minimum allowable age. Since
+the age at which a life event happened is only available at whole years,
+this can also include events, which happened before the allowable
+age, if include.first.year = T.}
+
+\item{include.first.year}{A logical. If TRUE, life events occuring at the
+same age as "min.age" are kept. Thus some events might have happened before
+"max.age". If FALSE, life events occuring at the same age will be set as not
+having occured. Default is FALSE.}
+
+\item{max.age.filter}{A logical. If max.age.filter = T, life events will be filtered
 according to the max.age and include.last.year settings. Missing age information
 will set life event to missing.}
 
 \item{max.age}{A string. Name of the column with the maximum allowable age. Since
 the age at which a life event happened is only available at whole years,
-this by default can also include events, which happened after the allowable
+this can also include events, which happened after the allowable
 age, if include.last.year = T.}
 
 \item{include.last.year}{A logical. If TRUE, life events occuring at the
 same age as "max.age" are kept. Thus some events might have happened after
 "max.age". If FALSE, life events occuring at the same age will be set as not
-having occured. Default is TRUE.}
+having occured. Default is FALSE.}
 
 \item{influence.filter}{A logical. If influence.filter = T, life events will
 be filtered according to the min.influence setting. Missing influence

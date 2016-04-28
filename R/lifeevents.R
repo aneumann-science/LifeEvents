@@ -6,17 +6,17 @@
 #' indicated by 1 and are otherwise 0.
 #'
 #' @param data A data frame containing the life events data
-#' @param age.filter A logical. If age.filter = T, life events will be filtered
+#' @param max.age.filter A logical. If max.age.filter = T, life events will be filtered
 #' according to the max.age and include.last.year settings. Missing age information
 #' will set life event to missing.
 #' @param max.age A string. Name of the column with the maximum allowable age. Since
 #' the age at which a life event happened is only available at whole years,
-#' this by default can also include events, which happened after the allowable
+#' this can also include events, which happened after the allowable
 #' age, if include.last.year = T.
 #' @param include.last.year A logical. If TRUE, life events occuring at the
 #' same age as "max.age" are kept. Thus some events might have happened after
 #' "max.age". If FALSE, life events occuring at the same age will be set as not
-#' having occured. Default is TRUE.
+#' having occured. Default is FALSE.
 #' @param influence.filter A logical. If influence.filter = T, life events will
 #' be filtered according to the min.influence setting. Missing influence
 #' information will set life events to missing.
@@ -38,16 +38,21 @@
 #'
 #' @export
 
-filter_le <- function(data, age.filter, max.age, include.last.year = T,
-                      influence.filter, min.influence,
-                      reliable) {
+filter_le <- function(data, min.age.filter=F, min.age, include.first.year = F,
+                      max.age.filter=F, max.age, include.last.year = F,
+                      influence.filter=F, min.influence,
+                      reliable=T) {
+  # Prepare variable names and data frame
   le.names <- paste0("le", 1:26)
   le_age.names <- paste0("le", 1:26, "age")
   le_influence.names <- paste0("le", 1:26, "influence")
   tofilter.data <- data[ , c(le.names, le_age.names,
-                             le_influence.names, "unreliable", max.age)]
+                             le_influence.names, "unreliable", min.age, max.age)]
 
+  # Convert data to numeric and age variables to integer
   tofilter.data <- as.data.frame(sapply(tofilter.data, function(x) as.numeric(x)))
+  tofilter.data[,min.age] <- as.integer(tofilter.data[,min.age])
+  tofilter.data[,max.age] <- as.integer(tofilter.data[,max.age])
 
   # Set life events data to missing when unreliable
   if (reliable) {
@@ -63,11 +68,61 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
     colnames(reliable.data) <- le.names
     tofilter.data <- cbind(reliable.data,
                            tofilter.data[c(le_age.names, le_influence.names,
-                                           "unreliable", max.age)])
+                                           "unreliable", min.age, max.age)])
   }
 
   # Filter for age, set to missing, when age missing and include last year
-  if (age.filter & include.last.year) {
+  if (min.age.filter & include.first.year) {
+    # For every life event
+    age.data <- sapply(1:26, function(x) {
+      # Set current variable name
+      le <- paste0("le", x, sep = "")
+      le_age <- paste0("le", x, "age", sep = "")
+      # Filter life events
+      filtered <-
+        # If life events did not occur or below age, set to 0
+        ifelse(tofilter.data[ ,le] == 1 |
+                 tofilter.data[ ,le] == 2 &
+                 (tofilter.data[,le_age] < tofilter.data[,min.age]),
+               1,
+               # If life event occured and above min.age, then 1, else NA
+               ifelse(tofilter.data[ ,le] == 2 &
+                        (tofilter.data[,le_age] >= tofilter.data[,min.age]),
+                      2,
+                      NA))
+    })
+    colnames(age.data) <- le.names
+    tofilter.data <- cbind(age.data,
+                           tofilter.data[c(le_age.names, le_influence.names,
+                                           "unreliable", min.age, max.age)])
+    # Filter for min.age, but do not include first year
+  } else if (min.age.filter & !include.first.year) {
+    # For every life event
+    age.data <- sapply(1:26, function(x) {
+      # Set current variable name
+      le <- paste0("le", x, sep = "")
+      le_age <- paste0("le", x, "age", sep = "")
+      # Filter life events
+      filtered <-
+        # If life events did not occur or below age, set to 0
+        ifelse(tofilter.data[ ,le] == 1 |
+                 tofilter.data[ ,le] == 2 &
+                 (tofilter.data[,le_age] <= tofilter.data[,min.age]),
+               1,
+               # If life event occured and above age, then 1, else NA
+               ifelse(tofilter.data[ ,le] == 2 &
+                        (tofilter.data[,le_age] > tofilter.data[,min.age]),
+                      2,
+                      NA))
+    })
+    colnames(age.data) <- le.names
+    tofilter.data <- cbind(age.data,
+                           tofilter.data[c(le_age.names, le_influence.names,
+                                           "unreliable", min.age, max.age)])
+  }
+
+  # Filter for age, set to missing, when age missing and include last year
+  if (max.age.filter & include.last.year) {
     # For every life event
     age.data <- sapply(1:26, function(x) {
       # Set current variable name
@@ -89,9 +144,9 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
     colnames(age.data) <- le.names
     tofilter.data <- cbind(age.data,
                            tofilter.data[c(le_age.names, le_influence.names,
-                                           "unreliable", max.age)])
+                                           "unreliable", min.age, max.age)])
     # Filter for max.age, but do not include last year
-  } else if (age.filter & !include.last.year) {
+  } else if (max.age.filter & !include.last.year) {
     # For every life event
     age.data <- sapply(1:26, function(x) {
       # Set current variable name
@@ -113,7 +168,7 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
     colnames(age.data) <- le.names
     tofilter.data <- cbind(age.data,
                            tofilter.data[c(le_age.names, le_influence.names,
-                                           "unreliable", max.age)])
+                                           "unreliable", min.age, max.age)])
   }
 
   # Filter for influence, set to missing, when influence is missing
@@ -139,7 +194,7 @@ filter_le <- function(data, age.filter, max.age, include.last.year = T,
     colnames(influence.data) <- le.names
     tofilter.data <- cbind(influence.data,
                            tofilter.data[c(le_age.names, le_influence.names,
-                                           "unreliable", max.age)])
+                                           "unreliable", min.age, max.age)])
   }
 
   # Change values, so that no life event = 0 and life event experienced = 1
@@ -171,3 +226,4 @@ sum_le <- function(data, include.open, na.rm) {
   # sum to missing
   rowSums(filtered.data, na.rm=na.rm)
 }
+
