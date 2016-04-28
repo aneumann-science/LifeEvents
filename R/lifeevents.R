@@ -6,6 +6,17 @@
 #' indicated by 1 and are otherwise 0.
 #'
 #' @param data A data frame containing the life events data
+#' @param min.age.filter A logical. If min.age.filter = T, life events will be filtered
+#' according to the min.age and include.first.year settings. Missing age information
+#' will set life event to missing.
+#' @param min.age A string. Name of the column with the minimum allowable age. Since
+#' the age at which a life event happened is only available at whole years,
+#' this can also include events, which happened before the allowable
+#' age, if include.first.year = T.
+#' @param include.first.year A logical. If TRUE, life events occuring at the
+#' same age as "min.age" are kept. Thus some events might have happened before
+#' "max.age". If FALSE, life events occuring at the same age will be set as not
+#' having occured. Default is FALSE.
 #' @param max.age.filter A logical. If max.age.filter = T, life events will be filtered
 #' according to the max.age and include.last.year settings. Missing age information
 #' will set life event to missing.
@@ -38,9 +49,9 @@
 #'
 #' @export
 
-filter_le <- function(data, min.age.filter=F, min.age, include.first.year = F,
-                      max.age.filter=F, max.age, include.last.year = F,
-                      influence.filter=F, min.influence,
+filter_le <- function(data, min.age.filter=F, min.age="", include.first.year = F,
+                      max.age.filter=F, max.age="", include.last.year = F,
+                      influence.filter=F, min.influence=1,
                       reliable=T) {
   # Prepare variable names and data frame
   le.names <- paste0("le", 1:26)
