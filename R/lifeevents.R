@@ -49,8 +49,8 @@
 #'
 #' @export
 
-filter_le <- function(data, min.age.filter=F, min.age="", include.first.year = F,
-                      max.age.filter=F, max.age="", include.last.year = F,
+filter_le <- function(data, min.age.filter=F, min.age=NULL, include.first.year = F,
+                      max.age.filter=F, max.age=NULL, include.last.year = F,
                       influence.filter=F, min.influence=1,
                       reliable=T) {
   # Prepare variable names and data frame
