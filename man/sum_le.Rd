@@ -4,14 +4,15 @@
 \alias{sum_le}
 \title{Compute number of life events}
 \usage{
-sum_le(data, include.open, na.rm)
+sum_le(data, range = c(1:24), na.rm = F)
 }
 \arguments{
 \item{data}{A matrix, which includes information, whether life evetns
 occured (1) or not (0).}
 
-\item{include.open}{A logical. include.open = T will include open life
-events in calculations.}
+\item{range}{A numeric vector. Indicates which life events should be taken
+into account. The default is c(1:24), which stands for all
+closed events.}
 
 \item{na.rm}{A logical. na.rm=T will treat missing life events as 0.
 na.rm = F will set number of life events to missing in presence of missing
@@ -19,7 +20,7 @@ life events.}
 }
 \description{
 \code{sum_le} computes the number of life events experienced. Options
-include to compute the number omitting open life events, as well as
-how to handle missing values.
+include to only take into account a subset of LE, as well as
+how to handle missing values. Completely missing rows are set to missing.
 }
 

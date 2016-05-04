@@ -4,9 +4,10 @@
 \alias{filter_le}
 \title{Filtering Life Events by Age and Influence}
 \usage{
-filter_le(data, min.age.filter = F, min.age = "", include.first.year = F,
-  max.age.filter = F, max.age = "", include.last.year = F,
-  influence.filter = F, min.influence = 1, reliable = T)
+filter_le(data, min.age.filter = F, min.age = NULL,
+  include.first.year = F, max.age.filter = F, max.age = NULL,
+  include.last.year = F, influence.filter = F, min.influence = 1,
+  reliable = T)
 }
 \arguments{
 \item{data}{A data frame containing the life events data}

@@ -216,25 +216,28 @@ filter_le <- function(data, min.age.filter=F, min.age=NULL, include.first.year =
 #' Compute number of life events
 #'
 #' \code{sum_le} computes the number of life events experienced. Options
-#' include to compute the number omitting open life events, as well as
-#' how to handle missing values.
+#' include to only take into account a subset of LE, as well as
+#' how to handle missing values. Completely missing rows are set to missing.
 #'
 #' @param data A matrix, which includes information, whether life evetns
 #' occured (1) or not (0).
-#' @param include.open A logical. include.open = T will include open life
-#' events in calculations.
+#' @param range A numeric vector. Indicates which life events should be taken
+#' into account. The default is c(1:24), which stands for all
+#' closed events.
 #' @param na.rm A logical. na.rm=T will treat missing life events as 0.
 #' na.rm = F will set number of life events to missing in presence of missing
 #' life events.
 #'
 #' @export
-sum_le <- function(data, include.open, na.rm) {
+sum_le <- function(data, range=c(1:24), na.rm=F) {
   # Include closed life events plus open life events, in case include.open == T
-  le <- paste0("le",1:ifelse(include.open,26,24))
-  # data frame with life events occured yes/no
+  le <- paste0("le",range)
+  # matrix with life events occured yes/no
   filtered.data <- data[, le]
   # Sum the life events, if na.rm = F, missing life events will set
   # sum to missing
-  rowSums(filtered.data, na.rm=na.rm)
+  number <- rowSums(filtered.data, na.rm=na.rm)
+  number[apply(filtered.data,1,function(x)all(is.na(x)))] <- NA
+  return(number)
 }
 
